@@ -12,9 +12,10 @@
 #    All rights reserved.
 #    BSD license.
 
+#    September 2020
+#    Bug-fixing by Giacomo Roversi <giacomo.roversi@edu.unife.it> 
 
 import networkx as nx
-#from networkx.utils import accumulate
 from networkx.utils import not_implemented_for
 import numpy as np
 
@@ -52,16 +53,18 @@ def _SPT(G, r, weight='weight'):
 
     """
     
-    G = G.copy() 
-    N = G.order()
+    # Avoid indexing issues inside T (line 73)
+    Gn = nx.convert_node_labels_to_integers(G)
+      
+    N = Gn.order()
     T = np.zeros((N,N))
     
     #Add the 'proximity' weight to each link (1/w) - WARNING: w has to be not zero!
-    for i,j in G.edges():
-        w = G[i][j][weight]
-        G[i][j]['proximity'] = 1./w
+    for i,j in Gn.edges():
+        w = Gn[i][j][weight]
+        Gn[i][j]['proximity'] = 1./w
     
-    paths=nx.shortest_path(G,source=r, weight='proximity')
+    paths=nx.shortest_path(Gn,source=r, weight='proximity')
     #each path is a dictionary with key: r and value:the list of nodes in the path
     
     #Filling T based on the presence of a link in at least one of the shortest paths
