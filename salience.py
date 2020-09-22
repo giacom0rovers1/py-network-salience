@@ -100,7 +100,8 @@ def salience(G,weight='weight'):
     
     N = G.order()
     S = np.zeros((N,N))
-    for n in G.nodes():
+    Gn = nx.convert_node_labels_to_integers(G)
+    for n in Gn.nodes():
         S = S + _SPT(G,n,weight=weight)
     S = 1.*S/N
     return S    
